@@ -3,6 +3,8 @@ using API_LCKR.Models;
 using API_LCKR.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography.X509Certificates;
 
 namespace API_LCKR.Controllers
@@ -20,18 +22,25 @@ namespace API_LCKR.Controllers
         [HttpPost("CriarCoach")]
         public IActionResult AddCoach(CoachDto coach)
         {
-            var result = _coachService.CreateCoach(coach);
-
-            if (result == "Coach já está cadastrado!")
+            try
             {
-                return BadRequest(result);
+                var result = _coachService.CreateCoach(coach);
+                return Ok(new
+                {
+                    result,
+                    coach
+                });
             }
 
-            return Ok(new
+            catch (InvalidOperationException ex)
             {
-                result,
-                coach
-            });
+                return Conflict(ex.Message);
+            }
+
+            catch (DbUpdateException)
+            {
+                return Conflict("Não foi possível cadastrar. Verifique os campos e tente novamente!");
+            }
         }
 
         [HttpGet("ListarCoaches")]
@@ -45,17 +54,30 @@ namespace API_LCKR.Controllers
         [HttpPut("AtualizarCoach/{cpf}")]
         public IActionResult UpdateCoach(string cpf, CoachDto coachDto)
         {
-            var result = _coachService.UpdateCoach(cpf, coachDto);
-            
-            if (result == "Cpf não foi encotrado")
+            try
             {
-                return BadRequest(result);
+                var result = _coachService.UpdateCoach(cpf, coachDto);
+                return Ok(new
+                {
+                    result,
+                    coachDto
+                });
             }
-            return Ok(new
+
+            catch (KeyNotFoundException ex)
             {
-                result,
-                coachDto
-            });
+                return NotFound(ex.Message);
+            }
+
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+
+            catch (DbUpdateException)
+            {
+                return Conflict("Não foi possível cadastrar. Verifique os campos e tente novamente!");
+            }
         }
 
         [HttpGet("BuscarCoach/{cpf}")]
@@ -74,13 +96,13 @@ namespace API_LCKR.Controllers
             }
         }
 
-        [HttpDelete("DeletarCoach")]
-        public IActionResult DeteteCoach(string cpf)
+        [HttpPut("InativarCoach")]
+        public IActionResult InativarCoach(string cpf)
         {
             try
             {
-                var message = "Coach removido!";
-                var result = _coachService.DeleteCoach(cpf);
+                var message = "Coach Inativo!";
+                var result = _coachService.InativarCoach(cpf);
                 return Ok(new
                 {
                     message,
@@ -92,6 +114,10 @@ namespace API_LCKR.Controllers
             {
 
                 return NotFound(ex.Message);
+            }          
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
             }
         }
     }

@@ -60,28 +60,28 @@ public partial class LckrDatabaseContext : DbContext
                 .HasColumnName("created_at");
             entity.Property(e => e.DataAdmissao).HasColumnName("data_admissao");
             entity.Property(e => e.Email)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("email");
             entity.Property(e => e.Especialidade)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .HasColumnName("especialidade");
             entity.Property(e => e.Status)
                 .HasColumnName("status")
                 .HasColumnType("status_coaches");
             entity.Property(e => e.Nome)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("nome");
             entity.Property(e => e.OrganizationCnpj)
                 .HasMaxLength(14)
                 .HasColumnName("organization_cnpj");
             entity.Property(e => e.SalarioAtual)
-                .HasPrecision(6, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("salario_atual");
             entity.Property(e => e.Senha)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("senha");
             entity.Property(e => e.Telefone)
-                .HasMaxLength(11)
+                .HasMaxLength(15)
                 .HasColumnName("telefone");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
@@ -104,18 +104,17 @@ public partial class LckrDatabaseContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.CoachCpf)
                 .HasMaxLength(11)
-                .HasColumnName("coach_cpf");
+                .HasColumnName("cpf_coach");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
             entity.Property(e => e.DataFim).HasColumnName("data_fim");
             entity.Property(e => e.DataInicio).HasColumnName("data_inicio");
-            entity.Property(e => e.DataPagamento).HasColumnName("data_pagamento");
             entity.Property(e => e.Motivo)
-                .HasMaxLength(100)
+                .HasMaxLength(255)
                 .HasColumnName("motivo");
             entity.Property(e => e.Salario)
-                .HasPrecision(6, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("salario");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")
@@ -142,13 +141,13 @@ public partial class LckrDatabaseContext : DbContext
                 .HasColumnType("status_lessons");
             entity.Property(e => e.CoachCpf)
                 .HasMaxLength(11)
-                .HasColumnName("coach_cpf");
+                .HasColumnName("cpf_coach");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
             entity.Property(e => e.DataAula).HasColumnName("data_aula");
             entity.Property(e => e.Descricao)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("descricao");
             entity.Property(e => e.HoraFim).HasColumnName("hora_fim");
             entity.Property(e => e.HoraInicio).HasColumnName("hora_inicio");
@@ -172,16 +171,16 @@ public partial class LckrDatabaseContext : DbContext
                 .HasMaxLength(14)
                 .HasColumnName("cnpj");
             entity.Property(e => e.Email)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("email");
             entity.Property(e => e.Endereco)
-                .HasMaxLength(100)
+                .HasMaxLength(255)
                 .HasColumnName("endereco");
             entity.Property(e => e.Nome)
-                .HasMaxLength(50)
+                .HasMaxLength(100)
                 .HasColumnName("nome");
             entity.Property(e => e.RazaoSocial)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("razao_social");
         });
 
@@ -199,20 +198,20 @@ public partial class LckrDatabaseContext : DbContext
                 .HasColumnName("status")
                 .HasColumnType("status_pagamento");
             entity.Property(e => e.Descricao)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("descricao");
             entity.Property(e => e.CpfCoach)
                 .HasMaxLength(11)
                 .HasColumnName("cpf_coach");
             entity.Property(e => e.MesReferencia)
-                .HasMaxLength(10)
+                .HasMaxLength(7)
                 .HasColumnName("mes_referencia");
             entity.Property(e => e.OrganizationCnpj)
                 .HasMaxLength(14)
                 .HasColumnName("organization_cnpj");
             entity.Property(e => e.PagoEm).HasColumnName("pago_em");
             entity.Property(e => e.Valor)
-                .HasPrecision(5, 2)
+                .HasPrecision(10, 2)
                 .HasColumnName("valor");
 
             entity.HasOne(d => d.OrganizationCnpjNavigation).WithMany(p => p.Payments)
@@ -239,16 +238,16 @@ public partial class LckrDatabaseContext : DbContext
                 .HasDefaultValueSql("now()")
                 .HasColumnName("created_at");
             entity.Property(e => e.Email)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("email");
             entity.Property(e => e.Nome)
-                .HasMaxLength(50)
+                .HasMaxLength(150)
                 .HasColumnName("nome");
             entity.Property(e => e.OrganizationCnpj)
                 .HasMaxLength(14)
                 .HasColumnName("organization_cnpj");
             entity.Property(e => e.Senha)
-                .HasMaxLength(50)
+                .HasMaxLength(255)
                 .HasColumnName("senha");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("now()")

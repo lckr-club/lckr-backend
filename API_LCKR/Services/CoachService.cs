@@ -20,10 +20,16 @@ namespace API_LCKR.Services
         public string CreateCoach(CoachDto coach)
         {
             var findCoach = _repository.FindCoachDto(coach);
+            var findEmail = _repository.FindCoachEmail(coach.Email);
 
             if (findCoach != null)
             {
-                return "Coach já está cadastrado!";
+                throw new InvalidOperationException("Coach já está cadastrado!");
+            }
+
+            if (findEmail != null)
+            {
+                throw new InvalidOperationException("Email já está cadastrado!");
             }
 
             _repository.addCoach(_mapper.ParaEntidade(coach));
@@ -49,9 +55,16 @@ namespace API_LCKR.Services
         public string UpdateCoach(string cpf, CoachDto coach)
         {
             var findCoach = _repository.FindCoachCpf(cpf);
+            var findEmail = _repository.FindCoachEmail(coach.Email);
+
             if (findCoach == null)
             {
-                return "Cpf não foi encotrado";
+                throw new KeyNotFoundException("Cpf não foi encotrado");
+            }
+
+            if (findEmail != null && findEmail.Cpf != cpf)
+            {
+                throw new InvalidOperationException("Email já está cadastrado!");
             }
 
             _repository.UpdateCoach(findCoach, coach);
@@ -70,16 +83,22 @@ namespace API_LCKR.Services
             return _mapper.ParaDto(findCoach);
         }
 
-        public CoachDto DeleteCoach(string cpf)
+        public CoachDto InativarCoach(string cpf)
         {
             var findCoach = _repository.FindCoachCpf(cpf);
+            bool pendencias = _repository.Pendencias(cpf);
 
             if (findCoach == null)
             {
                 throw new KeyNotFoundException("Cpf não foi encontrado!");
             }
 
-            _repository.DeleteCoach(findCoach);
+            if (pendencias)
+            {
+                throw new InvalidOperationException("Coach possui aulas agendadas ou pagamentos pendentes e não pode ser inativado.");
+            }
+
+            _repository.InativarCoach(findCoach);
 
             return _mapper.ParaDto(findCoach);
         }

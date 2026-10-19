@@ -17,8 +17,6 @@ public partial class CoachSalaryHistory
 
     public string? Motivo { get; set; }
 
-    public DateOnly? DataPagamento { get; set; }
-
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

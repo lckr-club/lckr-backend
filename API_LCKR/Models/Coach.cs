@@ -36,6 +36,5 @@ public partial class Coach
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
-
     public virtual Organization OrganizationCnpjNavigation { get; set; } = null!;
 }

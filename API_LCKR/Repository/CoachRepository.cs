@@ -22,6 +22,20 @@ namespace API_LCKR.Repository
             var database = _dbContext.Coaches.Find(cpf);
             return database;
         }
+        public Coach? FindCoachEmail(string email)
+        {
+            var database = _dbContext.Coaches.FirstOrDefault(d => d.Email == email);
+            return database;
+        }
+
+        public bool Pendencias(string cpf)
+        {
+            var pendenciasLessons = _dbContext.Lessons.Any(l => l.CoachCpf == cpf && l.Status == StatusLesson.Agendada);
+            var pendenciasPayments = _dbContext.Payments.Any(
+                p => p.CpfCoach == cpf && (p.Status == StatusPagamento.Pendente || p.Status == StatusPagamento.Atrasado));
+
+            return pendenciasLessons || pendenciasPayments;
+        }
 
         public List<Coach?> ListCoaches()
         {
@@ -51,9 +65,12 @@ namespace API_LCKR.Repository
             _dbContext.SaveChanges();
         }
 
-        public void DeleteCoach(Coach coach)
+        public void InativarCoach(Coach coach)
         {
-            _dbContext.Remove(coach);
+            coach.Status = StatusCoach.Inativo;
+            coach.UpdatedAt = DateTime.UtcNow;
+
+            _dbContext.Coaches.Update(coach);
             _dbContext.SaveChanges();
         }
     }

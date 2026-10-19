@@ -18,7 +18,7 @@ public partial class Payment
 
     public string Descricao { get; set; } = null!;
 
-    public DateOnly PagoEm { get; set; }
+    public DateOnly? PagoEm { get; set; }
 
     public string CpfCoach { get; set; } = null!;
 
