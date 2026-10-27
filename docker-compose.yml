@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:16
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: lckr-database
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+
+  api:
+    build: .
+    ports:
+      - "5180:8080"
+    environment:
+      ConnectionStrings__Connection: Host=db;Database=lckr-database;Username=postgres;Password=postgres
+    depends_on:
+      - db
