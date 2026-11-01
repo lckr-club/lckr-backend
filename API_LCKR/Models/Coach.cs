@@ -12,8 +12,6 @@ public partial class Coach
 
     public string Email { get; set; } = null!;
 
-    public string Senha { get; set; } = null!;
-
     public string Telefone { get; set; } = null!;
 
     public DateOnly DataAdmissao { get; set; } = DateOnly.FromDateTime(DateTime.Now);

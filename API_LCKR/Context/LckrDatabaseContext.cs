@@ -77,9 +77,6 @@ public partial class LckrDatabaseContext : DbContext
             entity.Property(e => e.SalarioAtual)
                 .HasPrecision(10, 2)
                 .HasColumnName("salario_atual");
-            entity.Property(e => e.Senha)
-                .HasMaxLength(255)
-                .HasColumnName("senha");
             entity.Property(e => e.Telefone)
                 .HasMaxLength(15)
                 .HasColumnName("telefone");

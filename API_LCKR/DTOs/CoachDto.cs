@@ -10,8 +10,6 @@ namespace API_LCKR.DTOs
 
         public string Email { get; set; } = null!;
 
-        public string Senha { get; set; } = null!;
-
         public string Telefone { get; set; } = null!;
 
         public string Especialidade { get; set; } = null!;

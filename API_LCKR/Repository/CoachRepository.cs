@@ -54,7 +54,6 @@ namespace API_LCKR.Repository
         {
             coach.Nome = coachDto.Nome;
             coach.Email = coachDto.Email;
-            coach.Senha = coachDto.Senha;
             coach.Telefone = coachDto.Telefone;
             coach.Especialidade = coachDto.Especialidade;
             coach.Status = coachDto.Status;
