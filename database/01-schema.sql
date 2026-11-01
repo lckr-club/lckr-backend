@@ -69,12 +69,17 @@ CREATE TABLE lessons (
     hora_fim TIME NOT NULL,
     capacidade INT NOT NULL,
     status status_lessons NOT NULL DEFAULT 'agendada',
-    descricao VARCHAR(255) NOT NULL,
+    modalidade VARCHAR(50) NOT NULL,
+    descricao VARCHAR(255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     cpf_coach VARCHAR(11) NOT NULL,
+    cpf_coach_previsto VARCHAR(11),
     
-    CONSTRAINT fk_lessons_coach FOREIGN KEY (cpf_coach) REFERENCES coaches(cpf) ON DELETE RESTRICT
+    CONSTRAINT fk_lessons_coach FOREIGN KEY (cpf_coach) REFERENCES coaches(cpf) ON DELETE RESTRICT,
+    CONSTRAINT fk_lessons_coach_previsto FOREIGN KEY (cpf_coach_previsto) REFERENCES coaches(cpf) ON DELETE RESTRICT,
+    CONSTRAINT ck_lessons_horario CHECK (hora_fim > hora_inicio),
+    CONSTRAINT ck_lessons_previsto CHECK (cpf_coach_previsto IS NULL OR cpf_coach_previsto <> cpf_coach)
 );
 
 -- Tabela para registrar o histórico de salário dos coaches ao longo do tempo
@@ -88,5 +93,8 @@ CREATE TABLE coach_salary_history (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     
-    CONSTRAINT fk_salary_history_coach FOREIGN KEY (cpf_coach) REFERENCES coaches(cpf) ON DELETE CASCADE
+    CONSTRAINT fk_salary_history_coach FOREIGN KEY (cpf_coach) REFERENCES coaches(cpf) ON DELETE CASCADE,
+    CONSTRAINT ck_salary_history_datas CHECK (data_fim IS NULL OR data_fim >= data_inicio)
 );
+
+CREATE UNIQUE INDEX ux_salary_history_aberto ON coach_salary_history (cpf_coach) WHERE data_fim IS NULL;

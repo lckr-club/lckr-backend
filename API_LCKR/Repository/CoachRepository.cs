@@ -57,7 +57,6 @@ namespace API_LCKR.Repository
             coach.Telefone = coachDto.Telefone;
             coach.Especialidade = coachDto.Especialidade;
             coach.Status = coachDto.Status;
-            coach.SalarioAtual = coachDto.SalarioAtual;
             coach.UpdatedAt = DateTime.UtcNow;
 
             _dbContext.Coaches.Update(coach);
@@ -67,6 +66,15 @@ namespace API_LCKR.Repository
         public void InativarCoach(Coach coach)
         {
             coach.Status = StatusCoach.Inativo;
+            coach.UpdatedAt = DateTime.UtcNow;
+
+            _dbContext.Coaches.Update(coach);
+            _dbContext.SaveChanges();
+        }
+
+        public void ReativarCoach(Coach coach)
+        {
+            coach.Status = StatusCoach.Ativo;
             coach.UpdatedAt = DateTime.UtcNow;
 
             _dbContext.Coaches.Update(coach);

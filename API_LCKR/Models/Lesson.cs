@@ -18,7 +18,9 @@ public partial class Lesson
 
     public StatusLesson Status { get; set; }
 
-    public string Descricao { get; set; } = null!;
+    public string Modalidade { get; set; } = null!;
+
+    public string? Descricao { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
@@ -26,5 +28,9 @@ public partial class Lesson
 
     public string CoachCpf { get; set; } = null!;
 
+    public string? CoachCpfPrevisto { get; set; }
+
     public virtual Coach CoachCpfNavigation { get; set; } = null!;
+
+    public virtual Coach? CoachCpfPrevistoNavigation { get; set; }
 }

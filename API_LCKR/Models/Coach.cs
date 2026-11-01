@@ -32,6 +32,8 @@ public partial class Coach
 
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
+    public virtual ICollection<Lesson> LessonsPrevistas { get; set; } = new List<Lesson>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual Organization OrganizationCnpjNavigation { get; set; } = null!;

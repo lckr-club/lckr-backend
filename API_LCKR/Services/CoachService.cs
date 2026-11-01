@@ -17,7 +17,7 @@ namespace API_LCKR.Services
             _mapper = mapper;
         }
 
-        public string CreateCoach(CoachDto coach)
+        public CoachDto CreateCoach(CoachDto coach)
         {
             var findCoach = _repository.FindCoachDto(coach);
             var findEmail = _repository.FindCoachEmail(coach.Email);
@@ -32,8 +32,18 @@ namespace API_LCKR.Services
                 throw new InvalidOperationException("Email já está cadastrado!");
             }
 
-            _repository.addCoach(_mapper.ParaEntidade(coach));
-            return "Coach adicionado!";
+            var entidade = _mapper.ParaEntidade(coach);
+
+            entidade.CoachSalaryHistories.Add(new CoachSalaryHistory
+            {
+                Salario = entidade.SalarioAtual,
+                DataInicio = entidade.DataAdmissao,
+                Motivo = "Valor inicial"
+            });
+
+            _repository.addCoach(entidade);
+
+            return _mapper.ParaDto(entidade);
         }
 
         public List<CoachDto?> ListCoaches()
@@ -52,14 +62,14 @@ namespace API_LCKR.Services
             return list;
         }
 
-        public string UpdateCoach(string cpf, CoachDto coach)
+        public CoachDto UpdateCoach(string cpf, CoachDto coach)
         {
             var findCoach = _repository.FindCoachCpf(cpf);
             var findEmail = _repository.FindCoachEmail(coach.Email);
 
             if (findCoach == null)
             {
-                throw new KeyNotFoundException("Cpf não foi encotrado");
+                throw new KeyNotFoundException("Cpf não foi encontrado!");
             }
 
             if (findEmail != null && findEmail.Cpf != cpf)
@@ -68,7 +78,8 @@ namespace API_LCKR.Services
             }
 
             _repository.UpdateCoach(findCoach, coach);
-            return "Coach atualizado!";
+
+            return _mapper.ParaDto(findCoach);
         }
 
         public CoachDto GetCoach(string cpf)
@@ -99,6 +110,25 @@ namespace API_LCKR.Services
             }
 
             _repository.InativarCoach(findCoach);
+
+            return _mapper.ParaDto(findCoach);
+        }
+
+        public CoachDto ReativarCoach(string cpf)
+        {
+            var findCoach = _repository.FindCoachCpf(cpf);
+
+            if (findCoach == null)
+            {
+                throw new KeyNotFoundException("Cpf não foi encontrado!");
+            }
+
+            if (findCoach.Status == StatusCoach.Ativo)
+            {
+                throw new InvalidOperationException("Coach já está ativo!");
+            }
+
+            _repository.ReativarCoach(findCoach);
 
             return _mapper.ParaDto(findCoach);
         }

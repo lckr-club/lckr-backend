@@ -1,11 +1,7 @@
 ﻿using API_LCKR.DTOs;
-using API_LCKR.Models;
 using API_LCKR.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 
 namespace API_LCKR.Controllers
 {
@@ -14,110 +10,118 @@ namespace API_LCKR.Controllers
     public class CoachController : ControllerBase
     {
         private readonly CoachService _coachService;
+
         public CoachController(CoachService coachService)
         {
             _coachService = coachService;
         }
 
         [HttpPost("CriarCoach")]
+        [ProducesResponseType(typeof(CoachDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status409Conflict)]
         public IActionResult AddCoach(CoachDto coach)
         {
             try
             {
                 var result = _coachService.CreateCoach(coach);
-                return Ok(new
-                {
-                    result,
-                    coach
-                });
-            }
 
+                return CreatedAtAction(nameof(GetCoach), new { cpf = result.Cpf }, result);
+            }
             catch (InvalidOperationException ex)
             {
-                return Conflict(ex.Message);
+                return Conflict(new ErroDto(ex.Message));
             }
-
             catch (DbUpdateException)
             {
-                return Conflict("Não foi possível cadastrar. Verifique os campos e tente novamente!");
+                return Conflict(new ErroDto("Não foi possível cadastrar. Verifique os campos e tente novamente!"));
             }
         }
 
         [HttpGet("ListarCoaches")]
+        [ProducesResponseType(typeof(List<CoachDto>), StatusCodes.Status200OK)]
         public IActionResult ListCoaches()
         {
-            var result = _coachService.ListCoaches();
-
-            return Ok(result);
-        }
-
-        [HttpPut("AtualizarCoach/{cpf}")]
-        public IActionResult UpdateCoach(string cpf, CoachDto coachDto)
-        {
-            try
-            {
-                var result = _coachService.UpdateCoach(cpf, coachDto);
-                return Ok(new
-                {
-                    result,
-                    coachDto
-                });
-            }
-
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-
-            catch (DbUpdateException)
-            {
-                return Conflict("Não foi possível cadastrar. Verifique os campos e tente novamente!");
-            }
+            return Ok(_coachService.ListCoaches());
         }
 
         [HttpGet("BuscarCoach/{cpf}")]
+        [ProducesResponseType(typeof(CoachDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status404NotFound)]
         public IActionResult GetCoach(string cpf)
         {
             try
             {
-                var result = _coachService.GetCoach(cpf);
-                return Ok(result);
-
+                return Ok(_coachService.GetCoach(cpf));
             }
             catch (KeyNotFoundException ex)
             {
+                return NotFound(new ErroDto(ex.Message));
+            }
+        }
 
-                return NotFound(ex.Message);
+        [HttpPut("AtualizarCoach/{cpf}")]
+        [ProducesResponseType(typeof(CoachDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status409Conflict)]
+        public IActionResult UpdateCoach(string cpf, CoachDto coachDto)
+        {
+            try
+            {
+                return Ok(_coachService.UpdateCoach(cpf, coachDto));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ErroDto(ex.Message));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new ErroDto(ex.Message));
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict(new ErroDto("Não foi possível atualizar. Verifique os campos e tente novamente!"));
             }
         }
 
         [HttpPut("InativarCoach")]
+        [ProducesResponseType(typeof(CoachDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status409Conflict)]
         public IActionResult InativarCoach(string cpf)
         {
             try
             {
-                var message = "Coach Inativo!";
-                var result = _coachService.InativarCoach(cpf);
-                return Ok(new
-                {
-                    message,
-                    result
-                });
-
+                return Ok(_coachService.InativarCoach(cpf));
             }
             catch (KeyNotFoundException ex)
             {
-
-                return NotFound(ex.Message);
-            }          
+                return NotFound(new ErroDto(ex.Message));
+            }
             catch (InvalidOperationException ex)
             {
-                return Conflict(ex.Message);
+                return Conflict(new ErroDto(ex.Message));
+            }
+        }
+
+        [HttpPut("ReativarCoach")]
+        [ProducesResponseType(typeof(CoachDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status409Conflict)]
+        public IActionResult ReativarCoach(string cpf)
+        {
+            try
+            {
+                return Ok(_coachService.ReativarCoach(cpf));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new ErroDto(ex.Message));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new ErroDto(ex.Message));
             }
         }
     }

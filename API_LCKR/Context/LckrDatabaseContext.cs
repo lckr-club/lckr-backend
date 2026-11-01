@@ -146,6 +146,12 @@ public partial class LckrDatabaseContext : DbContext
             entity.Property(e => e.Descricao)
                 .HasMaxLength(255)
                 .HasColumnName("descricao");
+            entity.Property(e => e.Modalidade)
+                .HasMaxLength(50)
+                .HasColumnName("modalidade");
+            entity.Property(e => e.CoachCpfPrevisto)
+                .HasMaxLength(11)
+                .HasColumnName("cpf_coach_previsto");
             entity.Property(e => e.HoraFim).HasColumnName("hora_fim");
             entity.Property(e => e.HoraInicio).HasColumnName("hora_inicio");
             entity.Property(e => e.UpdatedAt)
@@ -156,6 +162,11 @@ public partial class LckrDatabaseContext : DbContext
                 .HasForeignKey(d => d.CoachCpf)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("lessons_coach_cpf_fkey");
+
+            entity.HasOne(d => d.CoachCpfPrevistoNavigation).WithMany(p => p.LessonsPrevistas)
+                .HasForeignKey(d => d.CoachCpfPrevisto)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_lessons_coach_previsto");
         });
 
         modelBuilder.Entity<Organization>(entity =>
