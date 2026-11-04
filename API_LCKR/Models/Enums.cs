@@ -19,4 +19,10 @@
         Cancelado,
         Atrasado
     }
+
+    public enum StatusPeriodo
+    {
+        Aberto,
+        Fechado
+    }
 }

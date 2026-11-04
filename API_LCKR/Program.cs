@@ -7,10 +7,13 @@ using API_LCKR.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using QuestPDF.Infrastructure;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+QuestPDF.Settings.License = LicenseType.Community;
 
 // Add services to the container.
 var dataSourceBuilder = new NpgsqlDataSourceBuilder(
@@ -19,6 +22,7 @@ var dataSourceBuilder = new NpgsqlDataSourceBuilder(
 dataSourceBuilder.MapEnum<StatusCoach>("status_coaches");
 dataSourceBuilder.MapEnum<StatusLesson>("status_lessons");
 dataSourceBuilder.MapEnum<StatusPagamento>("status_pagamento");
+dataSourceBuilder.MapEnum<StatusPeriodo>("status_periodo");
 
 var dataSource = dataSourceBuilder.Build();
 
@@ -36,6 +40,16 @@ builder.Services.AddScoped<HistoricoValorMapper>();
 builder.Services.AddScoped<AulaService>();
 builder.Services.AddScoped<AulaRepository>();
 builder.Services.AddScoped<AulaMapper>();
+builder.Services.AddScoped<FolhaService>();
+builder.Services.AddScoped<FolhaRepository>();
+builder.Services.AddScoped<PeriodoService>();
+builder.Services.AddScoped<PeriodoRepository>();
+builder.Services.AddScoped<PeriodoMapper>();
+builder.Services.AddScoped<PagamentoService>();
+builder.Services.AddScoped<PagamentoRepository>();
+builder.Services.AddScoped<PagamentoMapper>();
+builder.Services.AddScoped<ExportacaoService>();
+builder.Services.AddScoped<EmailService>();
 
 
 builder.Services.AddControllers(options =>

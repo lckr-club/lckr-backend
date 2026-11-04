@@ -1,4 +1,5 @@
 ﻿using API_LCKR.DTOs;
+using API_LCKR.Helpers;
 using API_LCKR.Mappers;
 using API_LCKR.Models;
 using API_LCKR.Repository;
@@ -9,18 +10,21 @@ namespace API_LCKR.Services
     {
         private readonly AulaRepository _repository;
         private readonly CoachRepository _coachRepository;
+        private readonly PeriodoRepository _periodoRepository;
         private readonly AulaMapper _mapper;
 
-        public AulaService(AulaRepository repository, CoachRepository coachRepository, AulaMapper mapper)
+        public AulaService(AulaRepository repository, CoachRepository coachRepository, PeriodoRepository periodoRepository, AulaMapper mapper)
         {
             _repository = repository;
             _coachRepository = coachRepository;
+            _periodoRepository = periodoRepository;
             _mapper = mapper;
         }
 
         public AulaRespostaDto CriarAula(AulaDto aula)
         {
             ValidarHorario(aula);
+            ValidarPeriodoAberto(aula.DataAula!.Value);
             BuscarCoachAtivo(aula.CpfCoach);
             ValidarSobreposicao(aula, null);
 
@@ -48,6 +52,8 @@ namespace API_LCKR.Services
             var entidade = BuscarEntidade(id);
 
             ValidarHorario(aula);
+            ValidarPeriodoAberto(entidade.DataAula);
+            ValidarPeriodoAberto(aula.DataAula!.Value);
 
             if (aula.CpfCoach != entidade.CoachCpf)
             {
@@ -72,12 +78,16 @@ namespace API_LCKR.Services
         {
             var entidade = BuscarEntidade(id);
 
+            ValidarPeriodoAberto(entidade.DataAula);
+
             _repository.ExcluirAula(entidade);
         }
 
         public AulaRespostaDto AlterarStatus(Guid id, StatusLesson status)
         {
             var entidade = BuscarEntidade(id);
+
+            ValidarPeriodoAberto(entidade.DataAula);
 
             if (status == StatusLesson.Realizada && entidade.DataAula > DateOnly.FromDateTime(DateTime.Today))
             {
@@ -95,6 +105,8 @@ namespace API_LCKR.Services
         {
             var entidade = BuscarEntidade(id);
             var cpfSubstituto = substituicao.CpfSubstituto;
+
+            ValidarPeriodoAberto(entidade.DataAula);
 
             if (cpfSubstituto == entidade.CoachCpf)
             {
@@ -142,6 +154,14 @@ namespace API_LCKR.Services
             if (coach.Status == StatusCoach.Inativo)
             {
                 throw new InvalidOperationException("Coach inativo não pode receber aulas.");
+            }
+        }
+
+        private void ValidarPeriodoAberto(DateOnly data)
+        {
+            if (_periodoRepository.EstaFechado(data))
+            {
+                throw new InvalidOperationException($"O período {MesReferencia.Exibicao(MesReferencia.DaData(data))} está fechado. Reabra o período para alterar as aulas.");
             }
         }
 

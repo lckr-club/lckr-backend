@@ -26,6 +26,8 @@ public partial class LckrDatabaseContext : DbContext
 
     public virtual DbSet<Payment> Payments { get; set; }
 
+    public virtual DbSet<PayrollPeriod> PayrollPeriods { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,6 +46,11 @@ public partial class LckrDatabaseContext : DbContext
         modelBuilder.HasPostgresEnum<StatusLesson>(
             "public",
             "status_lessons"
+        );
+
+        modelBuilder.HasPostgresEnum<StatusPeriodo>(
+            "public",
+            "status_periodo"
         );
 
         modelBuilder.Entity<Coach>(entity =>
@@ -218,6 +225,9 @@ public partial class LckrDatabaseContext : DbContext
                 .HasMaxLength(14)
                 .HasColumnName("organization_cnpj");
             entity.Property(e => e.PagoEm).HasColumnName("pago_em");
+            entity.Property(e => e.HorasTotais)
+                .HasPrecision(8, 2)
+                .HasColumnName("horas_totais");
             entity.Property(e => e.Valor)
                 .HasPrecision(10, 2)
                 .HasColumnName("valor");
@@ -231,6 +241,42 @@ public partial class LckrDatabaseContext : DbContext
                 .HasForeignKey(d => d.CpfCoach)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_payments_coaches");
+        });
+
+        modelBuilder.Entity<PayrollPeriod>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("payroll_periods_pkey");
+
+            entity.ToTable("payroll_periods");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("gen_random_uuid()")
+                .HasColumnName("id");
+            entity.Property(e => e.MesReferencia)
+                .HasMaxLength(7)
+                .HasColumnName("mes_referencia");
+            entity.Property(e => e.DataInicio).HasColumnName("data_inicio");
+            entity.Property(e => e.DataFim).HasColumnName("data_fim");
+            entity.Property(e => e.Status)
+                .HasColumnName("status")
+                .HasColumnType("status_periodo");
+            entity.Property(e => e.DataFechamento).HasColumnName("data_fechamento");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.OrganizationCnpj)
+                .HasMaxLength(14)
+                .HasColumnName("organization_cnpj");
+
+            entity.HasIndex(e => e.MesReferencia).IsUnique();
+
+            entity.HasOne(d => d.OrganizationCnpjNavigation).WithMany(p => p.PayrollPeriods)
+                .HasForeignKey(d => d.OrganizationCnpj)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_periods_organization");
         });
 
         modelBuilder.Entity<User>(entity =>

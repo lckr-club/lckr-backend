@@ -20,6 +20,8 @@ public partial class Payment
 
     public DateOnly? PagoEm { get; set; }
 
+    public decimal HorasTotais { get; set; }
+
     public string CpfCoach { get; set; } = null!;
 
     public string OrganizationCnpj { get; set; } = null!;

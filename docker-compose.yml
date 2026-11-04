@@ -15,5 +15,11 @@ services:
       - "5180:8080"
     environment:
       ConnectionStrings__Connection: Host=db;Database=lckr-database;Username=postgres;Password=postgres
+      Email__Host: ${EMAIL_HOST:-}
+      Email__Porta: ${EMAIL_PORTA:-587}
+      Email__Usuario: ${EMAIL_USUARIO:-}
+      Email__Senha: ${EMAIL_SENHA:-}
+      Email__Remetente: ${EMAIL_REMETENTE:-}
+      Email__UsarSsl: ${EMAIL_USAR_SSL:-true}
     depends_on:
       - db

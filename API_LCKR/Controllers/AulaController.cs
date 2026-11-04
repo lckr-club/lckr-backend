@@ -93,6 +93,7 @@ namespace API_LCKR.Controllers
         [HttpDelete("ExcluirAula/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErroDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErroDto), StatusCodes.Status409Conflict)]
         public IActionResult ExcluirAula(Guid id)
         {
             try
@@ -104,6 +105,10 @@ namespace API_LCKR.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(new ErroDto(ex.Message));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new ErroDto(ex.Message));
             }
         }
 

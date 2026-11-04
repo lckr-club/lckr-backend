@@ -19,5 +19,7 @@ public partial class Organization
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
+    public virtual ICollection<PayrollPeriod> PayrollPeriods { get; set; } = new List<PayrollPeriod>();
+
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }
