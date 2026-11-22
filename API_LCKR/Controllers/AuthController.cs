@@ -1,11 +1,13 @@
 ﻿using API_LCKR.DTOs;
 using API_LCKR.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_LCKR.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly AuthService _authService;

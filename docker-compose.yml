@@ -15,6 +15,7 @@ services:
       - "5180:8080"
     environment:
       ConnectionStrings__Connection: Host=db;Database=lckr-database;Username=postgres;Password=postgres
+      Jwt__Key: ${JWT_KEY:-chave-local-de-desenvolvimento-troque-antes-de-publicar-0123456789}
       Email__Host: ${EMAIL_HOST:-}
       Email__Porta: ${EMAIL_PORTA:-587}
       Email__Usuario: ${EMAIL_USUARIO:-}
