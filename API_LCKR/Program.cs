@@ -86,7 +86,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("http://localhost:3000", "https://gestao.lckrclub.com")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
