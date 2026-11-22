@@ -66,6 +66,29 @@ dotnet run --launch-profile http
 
 A API sobe em http://localhost:5180.
 
+# Autenticação
+
+Todos os endpoints, exceto o login, exigem um token JWT no cabeçalho `Authorization: Bearer <token>`. Sem token, ou com token inválido ou expirado, a API responde 401.
+
+1. No Swagger, chame `POST /api/Auth/Login` com e-mail e senha de um usuário.
+2. Copie o valor de `token` da resposta.
+3. Clique em **Authorize**, cole só o token (sem escrever "Bearer") e confirme.
+4. Os demais endpoints passam a funcionar. O token vale 60 minutos (`Jwt:ExpiracaoMinutos`).
+
+O token carrega o id, o nome, o e-mail e o CNPJ da organização do usuário.
+
+A chave de assinatura (`Jwt:Key`, mínimo de 32 caracteres) não fica no `appsettings.json`.
+
+**Com Docker:** o `docker-compose.yml` já traz uma chave de desenvolvimento. Para usar outra, defina `JWT_KEY` no `.env`.
+
+**Sem Docker:** adicione a seção `Jwt` ao `appsettings.Development.json`.
+
+```
+"Jwt": {
+  "Key": "uma-chave-secreta-com-pelo-menos-32-caracteres"
+}
+```
+
 # Envio de e-mail
 
 O e-mail de fechamento da folha é enviado para o e-mail da tabela `organization`. Para testar, altere esse valor no banco.
