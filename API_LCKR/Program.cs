@@ -55,6 +55,7 @@ builder.Services.AddScoped<PagamentoRepository>();
 builder.Services.AddScoped<PagamentoMapper>();
 builder.Services.AddScoped<ExportacaoService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddHostedService<FinalizacaoAulasService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 

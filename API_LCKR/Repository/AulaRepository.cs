@@ -72,6 +72,15 @@ namespace API_LCKR.Repository
             _dbContext.SaveChanges();
         }
 
+        public int FinalizarAulasPassadas(DateOnly hoje)
+        {
+            return _dbContext.Lessons
+                .Where(l => l.Status == StatusLesson.Agendada && l.DataAula < hoje)
+                .ExecuteUpdate(s => s
+                    .SetProperty(l => l.Status, StatusLesson.Realizada)
+                    .SetProperty(l => l.UpdatedAt, DateTime.UtcNow));
+        }
+
         public void ExcluirAula(Lesson aula)
         {
             _dbContext.Lessons.Remove(aula);
